@@ -13,7 +13,8 @@ plt.hist2d(sgld[:,0],sgld[:,1],bins=40,range=[[-6,6],[-6,6]])
 plt.figure()
 sgulmcmc=np.load('./result_samples/SG_UL_MCMC/samples.npy')
 sgulmcmc=sgulmcmc[len(sgulmcmc)-lens:len(sgulmcmc)]
-plt.hist2d(sgulmcmc[:,0],sgulmcmc[:,1],bins=40,range=[[-6,6],[-6,6]])
+#plt.hist2d(sgulmcmc[:,0],sgulmcmc[:,1],bins=40,range=[[-6,6],[-6,6]])
+#plt.hist(sgulmcmc[:,0],bins=40,range=[-6,6])
 
 
 plt.figure()
