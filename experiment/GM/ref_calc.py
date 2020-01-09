@@ -4,7 +4,8 @@ def pdf(x,sample):
     result0=(2*np.exp(-(x-sample[0])**2/2)+np.exp(-(x+sample[0])**2/2))/(3*np.sqrt(2*np.pi))
     result1=(2*np.exp(-(x-sample[1])**2/2)+np.exp(-(x+sample[1])**2/2))/(3*np.sqrt(2*np.pi))
     return np.array([result0,result1])
-samples=np.load('./dataset/a.npy')
+
+samples=np.ones((500,2))*2
 lens=len(samples)
 
 Xs=np.linspace(-6,6,120)
