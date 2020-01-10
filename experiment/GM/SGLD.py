@@ -14,9 +14,9 @@ a=torch.Tensor(np.load('./dataset/a.npy'))
 num_epoch=20000
 batchSize=10
 dim=2
-factor_a=0.5
+factor_a=1
 factor_b=0
-factor_gamma=0
+factor_gamma=0.1
 #----------------------------------------------------------------------------
 datas=DataLoader(a,batch_size=batchSize,shuffle=True)
 x_list=[]

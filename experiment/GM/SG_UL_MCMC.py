@@ -14,15 +14,15 @@ a=torch.Tensor(np.load('./dataset/a.npy'))
 num_epoch=20000
 batchSize=10
 dim=2
-factor_a=0.11
+factor_a=1.5
 factor_b=0
-factor_gamma=0
+factor_gamma=0.08
 u=1
 gamma=1
 #-----------------------------------------------------------------------------------
 datas=DataLoader(a,batch_size=batchSize,shuffle=True)
 x_list=[]
-x=np.ones(dim)*-2
+x=np.ones(dim)*0
 v=np.ones(dim)*0
 
 for epoch in tqdm(range(num_epoch)):
