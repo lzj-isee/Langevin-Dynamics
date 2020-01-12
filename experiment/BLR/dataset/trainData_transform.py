@@ -36,7 +36,8 @@ for i in range(dataNum):
     train_features.append(temp)
 train_labels=np.array(train_labels)
 train_features=np.array(train_features)
-trainDatas=np.concatenate((train_labels,train_features),axis=1)
-trainDatas=sp.coo_matrix(trainDatas)
-sp.save_npz('./dataset/trainDatas.npz',trainDatas)
+#trainDatas=np.concatenate((train_labels,train_features),axis=1)
+train_features=sp.coo_matrix(train_features)
+sp.save_npz('./dataset/train_features.npz',train_features)
+np.save('./dataset/train_labels.npy',train_labels)
 
