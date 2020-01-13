@@ -22,7 +22,7 @@ def SG_UL_MCMC_it(datas,num_epoch,dim,factor_a,factor_b,factor_gamma,u,gamma):
                 u*gamma**(-2)*(gamma*eta+np.exp(-gamma*eta)-1)*grad_avg+noise_x
             v=v*np.exp(-gamma*eta)-u*gamma**(-1)*(1-np.exp(-gamma*eta))*grad_avg+noise_v
             x_list.append(x)
-    x_list=np.array(x_list)
+    x_list=np.array(x_list)[500000:1000000]
     return x_list
     
 
@@ -78,9 +78,9 @@ if __name__ == "__main__":
         'num_epoch':20000,
         'batchSize':10,
         'dim':2,
-        'factor_a':0.2,
+        'factor_a':0.1,
         'factor_b':0,
-        'factor_gamma':0,
+        'factor_gamma':0.05,
         'u':1,
         'gamma':1
         }

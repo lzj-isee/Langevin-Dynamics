@@ -1,12 +1,12 @@
 import torch
 import numpy as np
+import matplotlib.pyplot as plt
 
-cov=np.ones((4,4))*1
-v=np.ones(2)*0.3
-x=np.ones(2)*0.4
-std=np.diag(np.concatenate((x,v),axis=0))
-m=cov-np.diag(np.diag(cov))+std
-noise=np.random.multivariate_normal(np.zeros(4),m)
+a=np.load('./SG_UL_MCMC_result/seed[2020,2020]setting[0.10,0,0.05].npy')[500000:1000000,0]
+plt.hist(a,bins=120)
+plt.show()
+
+
 
 
 

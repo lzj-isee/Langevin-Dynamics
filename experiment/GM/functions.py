@@ -45,6 +45,15 @@ def noise_Gen1(u,gamma,eta,dim):
         (u*(1-np.exp(-2*gamma*eta)))
     std=np.concatenate((stdx,stdv))
     m=cov-np.diag(np.diag(cov))+np.diag(std)
+    noise=np.random.multivariate_normal(np.zeros(dim*2),m)
+    return noise[:dim], noise[dim:]
+
+def noise_Gen2(u,gamma,eta,dim):
+    stdx=np.ones(dim)*\
+        (u*gamma**(-2)*(2*gamma*eta+4*np.exp(-gamma*eta)-np.exp(-2*gamma*eta)-3))
+    stdv=np.ones(dim)*\
+        (u*(1-np.exp(-2*gamma*eta)))
+    std=np.concatenate((stdx,stdv))
     m=np.diag(std)
     noise=np.random.multivariate_normal(np.zeros(dim*2),m)
     return noise[:dim], noise[dim:]
