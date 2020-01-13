@@ -5,3 +5,5 @@ experiment/BLR/.vscode/settings.json
 experiment/BLR/.vscode/launch.json
 experiment/BLR/dataset/a9a-train.txt
 experiment/BLR/__pycache__/functions.cpython-36.pyc
+experiment/GM/SGLD_result/seed[2020]setting[1,0,0.1].npy
+experiment/GM/SG_UL_MCMC_result/seed[2020]setting[1.5,0,0.08].npy
