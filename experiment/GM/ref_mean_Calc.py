@@ -24,7 +24,7 @@ for i in tqdm(range(len(Xx))):
 
 X=X/np.sum(X)
 
-mean=np.array([0,0])
+mean=np.zeros(2)
 
 for i in tqdm(range(len(Xx))):
     for j in range(len(Xy)):

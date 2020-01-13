@@ -75,9 +75,9 @@ if __name__ == "__main__":
         'num_epoch':20000,
         'batchSize':10,
         'dim':2,
-        'factor_a':0.3,
+        'factor_a':1.8,
         'factor_b':0,
-        'factor_gamma':0,
+        'factor_gamma':0.15,
         }
     save_folder='./SVGR_LD_result'
     SVRG_LD_sample(random_seed,train_setting,save_folder)
