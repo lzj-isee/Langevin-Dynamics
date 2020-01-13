@@ -21,7 +21,7 @@ def grad_Calc(data,param):
     A=1/(1+np.exp(-Z))
     B=np.dot(np.diag(labels),features)
     result=np.dot(np.diag(A),B)
-    return -result
+    return -result  #用的是梯度下降，所以返回-result
 
 def nll_Cala(data,param):
     labels=(data.tensors[1]).numpy().reshape(-1)
@@ -30,3 +30,9 @@ def nll_Cala(data,param):
     nll=-np.log(1/(1+np.exp(-Z)))
     nll=nll.mean()
     return nll
+
+def information_print(epoch,num_epoch,i,step,nll):
+    print('Epoch[{}/{}], step[{}/{}]'.format(\
+        epoch,num_epoch,i,step))
+    print('NLL: {:.4f}\n'.format(\
+        nll))
