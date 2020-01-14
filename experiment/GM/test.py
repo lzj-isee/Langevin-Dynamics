@@ -2,11 +2,11 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 
-a=np.load('./SG_UL_MCMC_result/seed[2020,2020]setting[0.10,0,0.05].npy')[500000:1000000,0]
-plt.hist(a,bins=120)
-plt.show()
-
-
+a=np.array([1,2,3,4])
+b=np.array([5,6,7,8,9])
+for i in zip(a,b):
+    x=i
+    pause=1
 
 
 

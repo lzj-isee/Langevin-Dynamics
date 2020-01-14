@@ -42,6 +42,7 @@ def save_figure(samples,save_name):
     plt.xlim((-6,6))
     plt.legend(bbox_to_anchor=(-0.12,0.7))
     plt.savefig(save_name+'.png')
+    plt.close()
 
 def SVRG_LD_sample(random_seed,train_setting,save_folder):
     if not os.path.exists(save_folder):
@@ -56,7 +57,7 @@ def SVRG_LD_sample(random_seed,train_setting,save_folder):
     factor_gamma=train_setting['factor_gamma']
     save_name=save_folder+'/'+\
         'seed[{:},{:}]'.format(random_seed['pytorch'],random_seed['numpy'])+\
-        'setting[{:.2f},{:},{:.2f}]'.format(factor_a,factor_b,factor_gamma)
+        'setting[{:},{:},{:.2f}]'.format(factor_a,factor_b,factor_gamma)
     datas=np.load('./dataset/a.npy')
     #SGLD
     x_list=SVRG_LD_it(datas,num_epoch,dim,batchSize,factor_a,factor_b,factor_gamma)
