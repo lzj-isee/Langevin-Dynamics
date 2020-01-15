@@ -36,11 +36,8 @@ class SG_UL_MCMC_op(Optimizer):
             u=1
             noise_x,noise_v=self._gen_noise(shape,eta,gamma,u)
             #update
-            param_x.data=param_x.data+\
-                gamma*(1-np.exp(-gamma*eta))*param_v.data+\
-                u*gamma**(-2)*(gamma*eta+np.exp(-gamma*eta)-1)*grad+noise_x
-            param_v.data=param_v.data*np.exp(-gamma*eta)-\
-                u*gamma**(-1)*(1-np.exp(-gamma*eta))*grad+noise_v
+            param_x.data=param_x.data+gamma*(1-np.exp(-gamma*eta))*param_v.data+u*gamma**(-2)*(gamma*eta+np.exp(-gamma*eta)-1)*grad+noise_x
+            param_v.data=param_v.data*np.exp(-gamma*eta)-u*gamma**(-1)*(1-np.exp(-gamma*eta))*grad+noise_v
         return loss
 
     def _gen_noise(self,shape,eta,gamma,u):
