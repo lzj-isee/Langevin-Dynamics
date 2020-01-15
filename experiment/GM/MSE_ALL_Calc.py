@@ -17,11 +17,12 @@ def MSE_Calc(datas):
 path=[
     './SGLD_result_it',
     './SGHMC_result_it',
-    './SVRG_LD_result_it',
+    './SVGR_LD_result',
     './SG_UL_MCMC_result_it',
     './SRVR_HMC_result_it',
     './SRM_HMC_result_it',
-    './NSRM_HMC_result_it']
+    './NSRM_HMC_result_it3']
+
 name=[
     'SGLD',
     'SGHMC',
@@ -31,7 +32,7 @@ name=[
     'SRM_HMC',
     'NSRM_HMC']
 
-for i in range(7):
+for i in range(2,3):
     print(path[i])
     for files in tqdm(os.listdir(path[i])):
         if files[len(files)-3:len(files)]=='npy':
