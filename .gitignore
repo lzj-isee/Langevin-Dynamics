@@ -1466,3 +1466,4 @@ outdated/bayesian_logistic_regression/distributions/iteration_10000.png
 outdated/bayesian_logistic_regression/targets/SGD_10000.csv
 outdated/bayesian_logistic_regression/targets/temp_15000.csv
 outdated/bayesian_logistic_regression/targets/temp_20000.csv
+experiment/GM/MSE_ALL/NSRM_HMC_seed[2020,2020]setting[0.02,0,0.05]interval[100].npy

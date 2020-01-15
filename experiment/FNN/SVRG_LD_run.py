@@ -25,6 +25,17 @@ def _SVRG_LD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_tra
     curr_iter_count=0.0
 
     for epoch in range(num_epochs):
+        #updata the snapshot
+        snapshot_model.zero_grad()
+        optimizer.update_snapshot_weight() #update the weight of snapshot_model from main_model
+        for j,(images,labels) in enumerate(full_train_loader):
+            images=images.view(-1,28*28)
+            images=images.to(device)
+            labels=labels.to(device)
+            outputs=snapshot_model(images)
+            loss=loss_fn(outputs,labels,reduction='sum')
+            loss.backward()
+        optimizer.updata_snapshot_grad() #save the grad of the whole dataset in self.param_groups[2]
         for i,data in enumerate(train_loader):
             curr_iter_count+=1
             #get  the inputs
@@ -32,12 +43,17 @@ def _SVRG_LD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_tra
             images=images.view(-1,28*28)
             images=images.to(device)
             labels=labels.to(device)
-            #zero the parameter gradients
-            optimizer.zero_grad()
-            #forward + backward + optimize
+            #for main_model
+            model.zero_grad()
             outputs=model(images)
-            loss=loss_fn(outputs,labels)*train_num/batchSize
+            loss=loss_fn(outputs,labels,reduction='mean')*train_num
             loss.backward()
+            #for snapshot_model
+            snapshot_model.zero_grad()
+            snapshot_outputs=snapshot_model(images)
+            snapshot_loss=loss_fn(snapshot_outputs,labels,reduction='mean')*train_num
+            snapshot_loss.backward()
+            #step
             optimizer.step(curr_iter_count=curr_iter_count)
 
             #print & eval
@@ -107,7 +123,7 @@ def SVRG_LD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,rand
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=0.003
+    lr_a=0.00001
     lr_gamma=0.5
     print_interval=12
     random_seed=2020
