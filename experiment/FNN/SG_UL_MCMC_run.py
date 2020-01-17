@@ -9,7 +9,7 @@ import copy
 import pretty_errors
 
 
-def _SG_UL_MCMC_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_loader,\
+def _SG_UL_MCMC_iter(model,lr_a,lr_gamma,gamma,u,num_epochs,train_set,train_loader,full_train_loader,\
     test_set,test_loader,loss_fn,print_interval,device='cpu'):
     train_result_loss=[]
     train_result_corr=[]
@@ -17,7 +17,7 @@ def _SG_UL_MCMC_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_
     test_result_corr=[]
     train_num=len(train_set)
     test_num=len(test_set)
-    optimizer=SG_UL_MCMC_op(model.parameters(),lr_a,lr_gamma,device)
+    optimizer=SG_UL_MCMC_op(model.parameters(),lr_a,lr_gamma,gamma,u,device)
     curr_iter_count=0.0
 
     for epoch in range(num_epochs):
@@ -76,7 +76,7 @@ def _SG_UL_MCMC_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_
                 
     
 
-def SG_UL_MCMC_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
+def SG_UL_MCMC_train(lr_a,lr_gamma,gamma,u,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
     if torch.cuda.is_available():
         device=torch.device("cuda:0")
     else:
@@ -91,9 +91,11 @@ def SG_UL_MCMC_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,r
     save_name=save_folder+\
         'SG_UL_MCMC'+' '+\
         'lr_a[{}]'.format(lr_a)+\
-        'lr_gamma[{}]'.format(lr_gamma)
-    print('SG_UL_MCMC: lr_a:{}, lr_gamma:{}'.format(lr_a,lr_gamma))
-    train_loss,train_corr,test_loss,test_corr=_SG_UL_MCMC_iter(model,lr_a,lr_gamma,num_epochs,\
+        'lr_gamma[{}]'.format(lr_gamma)+\
+        'gamma[{}]'.format(gamma)+\
+        'u[{}]'.format(u)
+    print('SG_UL_MCMC: lr_a:{}, lr_gamma:{}, gamma:{}, u:{}'.format(lr_a,lr_gamma,gamma,u))
+    train_loss,train_corr,test_loss,test_corr=_SG_UL_MCMC_iter(model,lr_a,lr_gamma,gamma,u,num_epochs,\
         train_set,train_loader,full_train_loader,test_set,test_loader,\
             loss_fn,print_interval,device=device)
     result=np.array([train_loss,train_corr,test_loss,test_corr])
@@ -103,8 +105,10 @@ def SG_UL_MCMC_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,r
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=1e-05
-    lr_gamma=0.1
+    lr_a=1e-4
+    lr_gamma=0.2
+    gamma=0.9/lr_a
+    u=1
     print_interval=12
     random_seed=2020
     save_folder='./result/SG_UL_MCMC/'
@@ -112,6 +116,8 @@ if __name__ == "__main__":
     SG_UL_MCMC_train(
         lr_a,
         lr_gamma,
+        gamma,
+        u,
         num_epochs,
         batchSize,
         loss_fn,

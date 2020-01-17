@@ -103,8 +103,8 @@ def SGHMC_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=0.003
-    lr_gamma=0.8
+    lr_a=1.5e-3
+    lr_gamma=0.2
     print_interval=12
     random_seed=2020
     save_folder='./result/SGHMC/'

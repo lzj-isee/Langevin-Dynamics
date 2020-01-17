@@ -14,6 +14,7 @@ class SGHMC_op(Optimizer):
         param_group_v['name']='v'
         for param in param_group_v['params']:
             param.requires_grad=False
+            param.data=torch.zeros_like(param.data)
         self.param_groups.append(param_group_v)
 
 
@@ -29,10 +30,12 @@ class SGHMC_op(Optimizer):
                 continue
             g=param_x.grad.data
             eta=group_x['lr_a']*(curr_iter_count)**(-group_x['lr_gamma'])
-            # gamma=1, beta=1
-            noise=torch.randn_like(param_x)*math.sqrt(2*eta)
-            param_v.data=param_v.data-eta*(1*param_v.data+g)+noise.data
+            # beta=1
+            gamma=1/group_x['lr_a'] #tune gamma to get a better performance
+            noise=torch.randn_like(param_x)*math.sqrt(2*eta*gamma)
             param_x.data.add_(eta,param_v.data)
+            param_v.data=param_v.data-eta*(gamma*param_v.data+g)+noise.data
+            
 
         '''
         # code in SGLD_op

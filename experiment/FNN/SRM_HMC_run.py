@@ -2,14 +2,14 @@ import torch
 import torch.nn.functional as F
 from Model.FNN import FNN
 from DataLoader.DataLoader import Load_MNIST
-from Optimizer.SRVR_HMC_op import SRVR_HMC_op
+from Optimizer.SRM_HMC_op import SRM_HMC_op
 import numpy as np
 import os
 import copy
 import pretty_errors
 
 
-def _SRVR_HMC_iter(model,lr_a,lr_gamma,friction,num_epochs,train_set,train_loader,full_train_loader,\
+def _SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,train_set,train_loader,full_train_loader,\
     test_set,test_loader,loss_fn,print_interval,device='cpu'):
     train_result_loss=[]
     train_result_corr=[]
@@ -18,22 +18,22 @@ def _SRVR_HMC_iter(model,lr_a,lr_gamma,friction,num_epochs,train_set,train_loade
     train_num=len(train_set)
     test_num=len(test_set)
     snapshot_model=copy.deepcopy(model)
-    optimizer=SRVR_HMC_op([
+    optimizer=SRM_HMC_op([
         {'params':model.parameters(),'name':'main_x'},
         {'params':snapshot_model.parameters(),'name':'last_x'}],
-        lr_a,lr_gamma,friction,device)
+        lr_a,lr_gamma,p,friction,device)
     curr_iter_count=0.0
-
+    #Init
+    model.zero_grad()
+    for j,(images,labels) in enumerate(full_train_loader):
+        images=images.view(-1,28*28)
+        images=images.to(device)
+        labels=labels.to(device)
+        outputs=model(images)
+        loss=loss_fn(outputs,labels,reduction='sum')
+        loss.backward()
+    optimizer.init_grad()
     for epoch in range(num_epochs):
-        #Calc the whole grad
-        model.zero_grad()
-        for j,(images,labels) in enumerate(full_train_loader):
-            images=images.view(-1,28*28)
-            images=images.to(device)
-            labels=labels.to(device)
-            outputs=model(images)
-            loss=loss_fn(outputs,labels,reduction='sum')
-            loss.backward()
         for i,data in enumerate(train_loader):
             curr_iter_count+=1
             #get  the inputs
@@ -42,7 +42,8 @@ def _SRVR_HMC_iter(model,lr_a,lr_gamma,friction,num_epochs,train_set,train_loade
             images=images.to(device)
             labels=labels.to(device)
             if i!=0:
-                #for main_model, have no need to zero the grad since g_k=g_k-1+~
+                #for main_model
+                model.zero_grad()
                 outputs=model(images)
                 loss=loss_fn(outputs,labels,reduction='mean')*train_num
                 loss.backward()
@@ -95,7 +96,7 @@ def _SRVR_HMC_iter(model,lr_a,lr_gamma,friction,num_epochs,train_set,train_loade
                 
     
 
-def SRVR_HMC_train(lr_a,lr_gamma,friction,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
+def SRM_HMC_train(lr_a,lr_gamma,p,friction,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
     if torch.cuda.is_available():
         device=torch.device("cuda:0")
     else:
@@ -108,12 +109,12 @@ def SRVR_HMC_train(lr_a,lr_gamma,friction,num_epochs,batchSize,loss_fn,print_int
     model.to(device)
     train_set,train_loader,full_train_loader,test_set,test_loader=Load_MNIST(batchSize)
     save_name=save_folder+\
-        'SRVR_HMC'+' '+\
+        'SRM_HMC'+' '+\
         'lr_a[{}]'.format(lr_a)+\
         'lr_gamma[{}]'.format(lr_gamma)+\
         'friction[{}]'.format(friction)
-    print('SRVR_HMC: lr_a:{}, lr_gamma:{}, friction:{}'.format(lr_a,lr_gamma,friction))
-    train_loss,train_corr,test_loss,test_corr=_SRVR_HMC_iter(model,lr_a,lr_gamma,friction,num_epochs,\
+    print('SRM_HMC: lr_a:{}, lr_gamma:{}, p:{}, friction:{}'.format(lr_a,lr_gamma,p,friction))
+    train_loss,train_corr,test_loss,test_corr=_SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,\
         train_set,train_loader,full_train_loader,test_set,test_loader,\
             loss_fn,print_interval,device=device)
     result=np.array([train_loss,train_corr,test_loss,test_corr])
@@ -123,16 +124,18 @@ def SRVR_HMC_train(lr_a,lr_gamma,friction,num_epochs,batchSize,loss_fn,print_int
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=0.5e-4
-    lr_gamma=0.0
+    lr_a=0.5e-3
+    lr_gamma=0.1
+    p=1
     friction=0.5
     print_interval=12
     random_seed=2020
-    save_folder='./result/SRVR_HMC/'
+    save_folder='./result/SRM_HMC/'
     loss_fn=F.cross_entropy
-    SRVR_HMC_train(
+    SRM_HMC_train(
         lr_a,
         lr_gamma,
+        p,
         friction,
         num_epochs,
         batchSize,

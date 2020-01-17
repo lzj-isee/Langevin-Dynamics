@@ -5,8 +5,8 @@ import numpy as np
 import copy
 
 class SG_UL_MCMC_op(Optimizer):
-    def __init__(self,params,lr_a,lr_gamma,device="cpu"):
-        defaults=dict(lr_a=lr_a,lr_gamma=lr_gamma)
+    def __init__(self,params,lr_a,lr_gamma,gamma,u,device="cpu"):
+        defaults=dict(lr_a=lr_a,lr_gamma=lr_gamma,gamma=gamma,u=u)
         self.device=device
         #self.param_groups[0] is main_x, self.param_groups[1] save main_v
         super(SG_UL_MCMC_op,self).__init__(params,defaults)
@@ -15,6 +15,7 @@ class SG_UL_MCMC_op(Optimizer):
         param_group_v['name']='v'
         for param in param_group_v['params']:
             param.requires_grad=False
+            param.data=torch.zeros_like(param.data)#v0=0
         self.param_groups.append(param_group_v)
 
 
@@ -31,13 +32,15 @@ class SG_UL_MCMC_op(Optimizer):
             grad=param_x.grad.data
             eta=group_x['lr_a']*(curr_iter_count)**(-group_x['lr_gamma'])
             shape=param_x.data.shape
-            # default:  gamma=1 and  u=1
-            gamma=1
-            u=1
+            gamma=group_x['gamma']
+            u=group_x['u']
             noise_x,noise_v=self._gen_noise(shape,eta,gamma,u)
             #update
-            param_x.data=param_x.data+gamma*(1-np.exp(-gamma*eta))*param_v.data+u*gamma**(-2)*(gamma*eta+np.exp(-gamma*eta)-1)*grad+noise_x
+            
+            param_x.data=param_x.data+gamma**(-1)*(1-np.exp(-gamma*eta))*param_v.data+u*gamma**(-2)*(gamma*eta+np.exp(-gamma*eta)-1)*grad+noise_x
             param_v.data=param_v.data*np.exp(-gamma*eta)-u*gamma**(-1)*(1-np.exp(-gamma*eta))*grad+noise_v
+            
+            
         return loss
 
     def _gen_noise(self,shape,eta,gamma,u):
