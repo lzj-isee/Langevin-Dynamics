@@ -2,14 +2,14 @@ import torch
 import torch.nn.functional as F
 from Model.FNN import FNN
 from DataLoader.DataLoader import Load_MNIST
-from Optimizer.SRM_HMC_op import SRM_HMC_op
+from Optimizer.NSRM_HMC_op import NSRM_HMC_op
 import numpy as np
 import os
 import copy
 import pretty_errors
 
 
-def _SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,train_set,train_loader,full_train_loader,\
+def _NSRM_HMC_iter(model,lr_a,lr_gamma,reboot,friction,num_epochs,train_set,train_loader,full_train_loader,\
     test_set,test_loader,loss_fn,print_interval,device='cpu'):
     train_result_loss=[]
     train_result_corr=[]
@@ -18,24 +18,29 @@ def _SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,train_set,train_load
     train_num=len(train_set)
     test_num=len(test_set)
     snapshot_model=copy.deepcopy(model)
-    optimizer=SRM_HMC_op([
+    optimizer=NSRM_HMC_op([
         {'params':model.parameters(),'name':'main_x'},
         {'params':snapshot_model.parameters(),'name':'last_x'}],
-        lr_a,lr_gamma,p,friction,device)
+        lr_a,lr_gamma,friction,device)
     curr_iter_count=0.0
-    #Init
-    model.zero_grad()
-    for j,(images,labels) in enumerate(full_train_loader):
-        images=images.view(-1,28*28)
-        images=images.to(device)
-        labels=labels.to(device)
-        outputs=model(images)
-        loss=loss_fn(outputs,labels,reduction='sum')
-        loss.backward()
-    optimizer.init_grad()
+    k=0.0
+
     for epoch in range(num_epochs):
         for i,data in enumerate(train_loader):
             curr_iter_count+=1
+            k+=1
+            if i==0 and epoch%reboot==0:
+                k=1
+                #Init
+                model.zero_grad()
+                for j,(images,labels) in enumerate(full_train_loader):
+                    images=images.view(-1,28*28)
+                    images=images.to(device)
+                    labels=labels.to(device)
+                    outputs=model(images)
+                    loss=loss_fn(outputs,labels,reduction='sum')
+                    loss.backward()
+                optimizer.init_grad()
             #update x and v
             optimizer.updata_x_v(curr_iter_count)
             #get  the inputs
@@ -54,7 +59,7 @@ def _SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,train_set,train_load
             snapshot_loss=loss_fn(snapshot_outputs,labels,reduction='mean')*train_num
             snapshot_loss.backward()
             #update grad
-            optimizer.updata_g(curr_iter_count)
+            optimizer.updata_g(k)
 
             #print & eval
             if  (curr_iter_count-1)%print_interval==0:
@@ -97,7 +102,7 @@ def _SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,train_set,train_load
                 
     
 
-def SRM_HMC_train(lr_a,lr_gamma,p,friction,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
+def NSRM_HMC_train(lr_a,lr_gamma,reboot,friction,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
     if torch.cuda.is_available():
         device=torch.device("cuda:0")
     else:
@@ -110,13 +115,13 @@ def SRM_HMC_train(lr_a,lr_gamma,p,friction,num_epochs,batchSize,loss_fn,print_in
     model.to(device)
     train_set,train_loader,full_train_loader,test_set,test_loader=Load_MNIST(batchSize)
     save_name=save_folder+\
-        'SRM_HMC'+' '+\
+        'NSRM_HMC'+' '+\
         'lr_a[{:.3e}]'.format(lr_a)+\
         'lr_gamma[{}]'.format(lr_gamma)+\
-        'p[{}]'.format(p)+\
+        'reboot[{}]'.format(reboot)+\
         'friction[{}]'.format(friction)
-    print('SRM_HMC: lr_a:{:.3e}, lr_gamma:{}, p:{}, friction:{}'.format(lr_a,lr_gamma,p,friction))
-    train_loss,train_corr,test_loss,test_corr=_SRM_HMC_iter(model,lr_a,lr_gamma,p,friction,num_epochs,\
+    print('NSRM_HMC: lr_a:{:.3e}, lr_gamma:{}, reboot:{}, friction:{}'.format(lr_a,lr_gamma,reboot,friction))
+    train_loss,train_corr,test_loss,test_corr=_NSRM_HMC_iter(model,lr_a,lr_gamma,reboot,friction,num_epochs,\
         train_set,train_loader,full_train_loader,test_set,test_loader,\
             loss_fn,print_interval,device=device)
     result=np.array([train_loss,train_corr,test_loss,test_corr])
@@ -126,18 +131,18 @@ def SRM_HMC_train(lr_a,lr_gamma,p,friction,num_epochs,batchSize,loss_fn,print_in
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=1.5e-3
-    lr_gamma=0.2
-    p=0.0
+    lr_a=1.2e-3
+    lr_gamma=0.05
+    reboot=1
     friction=1.0
     print_interval=12
     random_seed=2020
-    save_folder='./result/SRM_HMC/'
+    save_folder='./result/NSRM_HMC/'
     loss_fn=F.cross_entropy
-    SRM_HMC_train(
+    NSRM_HMC_train(
         lr_a,
         lr_gamma,
-        p,
+        reboot,
         friction,
         num_epochs,
         batchSize,

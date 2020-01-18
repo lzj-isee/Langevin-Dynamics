@@ -22,7 +22,7 @@ def SVRG_LD_it(datas,num_epoch,dim,batchSize,factor_a,factor_b,factor_gamma):
             noise=(np.sqrt(2*eta)*torch.randn(2)).numpy()
             x=x-eta*g+noise
             x_list.append(x)
-    x_list=np.array(x_list)[500000:1000000]
+    x_list=np.array(x_list)
     return x_list
     
 
@@ -31,13 +31,13 @@ def save_figure(samples,save_name):
     Xs=np.linspace(-6,6,len(Ys))
     plt.figure(figsize=(6.4,6.4))
     ax1=plt.subplot2grid((15,15),(0,4),rowspan=11,colspan=11)
-    ax1.hist2d(samples[:,0],samples[:,1],bins=60,range=[[-6,6],[-6,6]],cmap='Reds')
+    ax1.hist2d(samples[:,0],samples[:,1],bins=120,range=[[-6,6],[-6,6]],cmap='Reds')
     ax2=plt.subplot2grid((15,15),(0,0),rowspan=11,colspan=3)
-    ax2.hist(samples[:,1],bins=60,range=[-6,6], orientation='horizontal',density=True)
+    ax2.hist(samples[:,1],bins=120,range=[-6,6], orientation='horizontal',density=True)
     ax2.plot(Ys[:,1],Xs,color='r')
     plt.ylim((-6,6))
     ax3=plt.subplot2grid((15,15),(12,4),rowspan=3,colspan=11)
-    ax3.hist(samples[:,0],bins=60,range=[-6,6], orientation='vertical',density=True,label='SVRG_LD')
+    ax3.hist(samples[:,0],bins=120,range=[-6,6], orientation='vertical',density=True,label='SVRG_LD')
     ax3.plot(Xs,Ys[:,0],color='r',label='ref')
     plt.xlim((-6,6))
     plt.legend(bbox_to_anchor=(-0.12,0.7))

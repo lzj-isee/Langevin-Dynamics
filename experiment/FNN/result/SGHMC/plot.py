@@ -9,7 +9,7 @@ for i,file_name in enumerate(file_names):
         file_names.pop(i)
 
 for file_name in file_names:
-    data=np.load(path+file_name)[1]
+    data=np.load(path+file_name)[0]
     plt.plot(data,label=file_name)
 plt.legend()
 plt.show()

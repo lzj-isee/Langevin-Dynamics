@@ -27,7 +27,7 @@ def SRM_HMC_it(datas,num_epoch,dim,batchSize,factor_a,factor_b,factor_t,factor_g
             g=grad_f(x,datas_choice).mean(0)+(1-1/t**(factor_t))*(g-grad_f(x_last,datas_choice).mean(0))
             #g=grad_f(x,datas_choice).mean(0)+0.99*(g-grad_f(x_last,datas_choice).mean(0))
             x_list.append(x)
-    x_list=np.array(x_list)[500000:1000000]
+    x_list=np.array(x_list)
     return x_list
     
 
@@ -36,13 +36,13 @@ def save_figure(samples,save_name):
     Xs=np.linspace(-6,6,len(Ys))
     plt.figure(figsize=(6.4,6.4))
     ax1=plt.subplot2grid((15,15),(0,4),rowspan=11,colspan=11)
-    ax1.hist2d(samples[:,0],samples[:,1],bins=60,range=[[-6,6],[-6,6]],cmap='Reds')
+    ax1.hist2d(samples[:,0],samples[:,1],bins=120,range=[[-6,6],[-6,6]],cmap='Reds')
     ax2=plt.subplot2grid((15,15),(0,0),rowspan=11,colspan=3)
-    ax2.hist(samples[:,1],bins=60,range=[-6,6], orientation='horizontal',density=True)
+    ax2.hist(samples[:,1],bins=120,range=[-6,6], orientation='horizontal',density=True)
     ax2.plot(Ys[:,1],Xs,color='r')
     plt.ylim((-6,6))
     ax3=plt.subplot2grid((15,15),(12,4),rowspan=3,colspan=11)
-    ax3.hist(samples[:,0],bins=60,range=[-6,6], orientation='vertical',density=True,label='SRM_HMC')
+    ax3.hist(samples[:,0],bins=120,range=[-6,6], orientation='vertical',density=True,label='SRM_HMC')
     ax3.plot(Xs,Ys[:,0],color='r',label='ref')
     plt.xlim((-6,6))
     plt.legend(bbox_to_anchor=(-0.12,0.7))
@@ -85,12 +85,12 @@ if __name__ == "__main__":
         'num_epoch':20000,
         'batchSize':10,
         'dim':2,
-        'factor_a':0.06,
+        'factor_a':0.08,
         'factor_b':0,
-        'factor_gamma':0,
+        'factor_gamma':0.05,
         'u':1,
         'gamma':1,
-        'factor_t':1
+        'factor_t':0.5
         }
-    save_folder='./SRM_HMC_result'
+    save_folder='./SRM_HMC_result4'
     SRM_HMC_sample(random_seed,train_setting,save_folder)

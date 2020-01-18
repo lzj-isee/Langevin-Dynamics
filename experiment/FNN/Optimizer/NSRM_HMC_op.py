@@ -4,13 +4,13 @@ import math
 import numpy as np
 import copy
 
-class SRM_HMC_op(Optimizer):
-    def __init__(self,params,lr_a,lr_gamma,p,friction,device="cpu"):
-        defaults=dict(lr_a=lr_a,lr_gamma=lr_gamma,p=p,friction=friction)
+class NSRM_HMC_op(Optimizer):
+    def __init__(self,params,lr_a,lr_gamma,friction,device="cpu"):
+        defaults=dict(lr_a=lr_a,lr_gamma=lr_gamma,friction=friction)
         self.device=device
         #self.param_groups[0] is main_model, self.param_groups[1] is last_model
         # and self.param_groups[2] save the v of main_model and it has no need to Calc the grad
-        super(SRM_HMC_op,self).__init__(params,defaults)
+        super(NSRM_HMC_op,self).__init__(params,defaults)
         param_group_v=copy.deepcopy(self.param_groups[0])
         #append a new param_group to save v and g_k
         param_group_v['name']='main_v'
@@ -52,7 +52,7 @@ class SRM_HMC_op(Optimizer):
             param_x.data.add_(eta,param_v.data)
             param_v.data=param_v.data-eta*(gamma*param_v.data+g)+noise.data
             #Note: param_groups_v save g_k
-            rho=1/(curr_iter_count)**group_x['p']
+            rho=1/(curr_iter_count)
             param_v.grad.data=param_x.grad.data+(1-rho)*(param_v.grad.data-param_last.grad.data)
         return loss
 
@@ -104,6 +104,6 @@ class SRM_HMC_op(Optimizer):
             if param_x.grad is None:
                 continue
             #Note: param_groups_v save g_k
-            rho=1/(curr_iter_count)**group_x['p']
+            rho=1/(curr_iter_count)
             param_v.grad.data=param_x.grad.data+(1-rho)*(param_v.grad.data-param_last.grad.data)
 
