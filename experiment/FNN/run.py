@@ -7,15 +7,18 @@ import torch.nn.functional as F
 
 import numpy as np
 
-'''
-lr_as=np.array([0.1,0.15,0.2,0.25,0.3,0.35])*1e-4
-lr_gammas=np.array([0.0])
+lr_as=np.array([1.0,1.2,1.4,1.6,1.8,2.0,4.0,6.0])*1e-4
+lr_gammas=np.array([0.0,0.05,0.1,0.15,0.2,0.25,0.3])
 for lr_a in lr_as:
     for lr_gamma in lr_gammas:
+        if lr_gamma==0.0:
+            friction=0.3
+        else:
+            friction=1.0
         SRVR_HMC_train(
             lr_a,
             lr_gamma,
-            friction=0.5,
+            friction,
             num_epochs=10,
             batchSize=500,
             loss_fn=F.cross_entropy,
@@ -23,7 +26,7 @@ for lr_a in lr_as:
             random_seed=2020,
             save_folder='./result/SRVR_HMC/',
             device='cpu')
-'''
+
 '''
 lr_as=np.array([1.2,1.0,0.8,0.6,0.4,0.2,0.1])*1e-3
 lr_gammas=np.array([0.0,0.05,0.15,0.2,0.25])
@@ -46,6 +49,7 @@ for lr_a in lr_as:
             save_folder='./result/SRM_HMC/',
             device='cpu')
 '''
+'''
 lr_as=np.array([1.4,1.2,1.0,0.8,0.6])*1e-3
 lr_gammas=np.array([0.0,0.05,0.15,0.2])
 for lr_a in lr_as:
@@ -66,3 +70,4 @@ for lr_a in lr_as:
             random_seed=2020,
             save_folder='./result/NSRM_HMC/',
             device='cpu')
+'''

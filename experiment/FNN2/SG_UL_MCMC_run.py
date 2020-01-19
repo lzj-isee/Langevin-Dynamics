@@ -2,12 +2,14 @@ import torch
 import torch.nn.functional as F
 from Model.FNN import FNN
 from DataLoader.DataLoader import Load_MNIST
-from Optimizer.SGLD_op import SGLD_op
+from Optimizer.SG_UL_MCMC_op import SG_UL_MCMC_op
 import numpy as np
 import os
+import copy
+import pretty_errors
 
 
-def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_loader,\
+def _SG_UL_MCMC_iter(model,lr_a,lr_gamma,gamma,u,num_epochs,train_set,train_loader,full_train_loader,\
     test_set,test_loader,loss_fn,print_interval,device='cpu'):
     train_result_loss=[]
     train_result_corr=[]
@@ -15,7 +17,7 @@ def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_
     test_result_corr=[]
     train_num=len(train_set)
     test_num=len(test_set)
-    optimizer=SGLD_op(model.parameters(),lr_a,lr_gamma,device)
+    optimizer=SG_UL_MCMC_op(model.parameters(),lr_a,lr_gamma,gamma,u,device)
     curr_iter_count=0.0
 
     for epoch in range(num_epochs):
@@ -26,12 +28,11 @@ def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_
             images=images.view(-1,28*28)
             images=images.to(device)
             labels=labels.to(device)
-            #zero the parameter gradients
-            optimizer.zero_grad()
-            #forward + backward + optimize
+            #forward + backward + step
             outputs=model(images)
             loss=loss_fn(outputs,labels,reduction='mean')*train_num
             loss.backward()
+            #step
             optimizer.step(curr_iter_count=curr_iter_count)
 
             #print & eval
@@ -75,7 +76,7 @@ def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_
                 
     
 
-def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
+def SG_UL_MCMC_train(lr_a,lr_gamma,gamma,u,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
     if torch.cuda.is_available():
         device=torch.device("cuda:0")
     else:
@@ -83,15 +84,18 @@ def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_
     if not os.path.exists(save_folder):
         os.makedirs(save_folder)
     torch.manual_seed(random_seed)
+    np.random.seed(random_seed)
     model=FNN()
     model.to(device)
     train_set,train_loader,full_train_loader,test_set,test_loader=Load_MNIST(batchSize)
     save_name=save_folder+\
-        'SGLD'+' '+\
+        'SG_UL_MCMC'+' '+\
         'lr_a[{}]'.format(lr_a)+\
-        'lr_gamma[{}]'.format(lr_gamma)
-    print('SGLD: lr_a:{}, lr_gamma:{}'.format(lr_a,lr_gamma))
-    train_loss,train_corr,test_loss,test_corr=_SGLD_iter(model,lr_a,lr_gamma,num_epochs,\
+        'lr_gamma[{}]'.format(lr_gamma)+\
+        'gamma[{}]'.format(gamma)+\
+        'u[{}]'.format(u)
+    print('SG_UL_MCMC: lr_a:{}, lr_gamma:{}, gamma:{}, u:{}'.format(lr_a,lr_gamma,gamma,u))
+    train_loss,train_corr,test_loss,test_corr=_SG_UL_MCMC_iter(model,lr_a,lr_gamma,gamma,u,num_epochs,\
         train_set,train_loader,full_train_loader,test_set,test_loader,\
             loss_fn,print_interval,device=device)
     result=np.array([train_loss,train_corr,test_loss,test_corr])
@@ -101,15 +105,19 @@ def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=0.00001
-    lr_gamma=0.4
+    lr_a=1e-4
+    lr_gamma=0.2
+    gamma=0.9/lr_a
+    u=1
     print_interval=12
     random_seed=2020
-    save_folder='./result/SGLD/'
+    save_folder='./result/SG_UL_MCMC/'
     loss_fn=F.cross_entropy
-    SGLD_train(
+    SG_UL_MCMC_train(
         lr_a,
         lr_gamma,
+        gamma,
+        u,
         num_epochs,
         batchSize,
         loss_fn,

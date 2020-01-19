@@ -1,16 +1,14 @@
 import torch
-import numpy as np
-from torch.utils.data import TensorDataset
+import torchvision
+import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, BatchSampler, RandomSampler
 
 
-def Load_DataSet(batchSize):
-    train_features=torch.Tensor(np.load('./DataSet/train_features.npy'))
-    train_labels=torch.Tensor(np.load('./DataSet/train_labels.npy').reshape(-1))
-    test_features=torch.Tensor(np.load('./DataSet/test_features.npy'))
-    test_labels=torch.Tensor(np.load('./DataSet/test_labels.npy').reshape(-1))
-    train_set=TensorDataset(train_features,train_labels)
-    test_set=TensorDataset(test_features,test_labels)
+def Load_MNIST(batchSize):
+    transform=transforms.Compose(
+        [transforms.ToTensor(),transforms.Normalize((0.5,),(0.5,))])
+    train_set=torchvision.datasets.MNIST(root='./DataSet',train=True,download=True,transform=transform)
+    test_set=torchvision.datasets.MNIST(root='./DataSet',train=False,download=True,transform=transform)
     train_loader=DataLoader(
         train_set,
         num_workers=4,
@@ -26,4 +24,6 @@ def Load_DataSet(batchSize):
         shuffle=False,
         batch_size=1000,
         num_workers=4)
+    
     return train_set,train_loader,full_train_loader,test_set,test_loader
+    

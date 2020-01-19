@@ -2,12 +2,14 @@ import torch
 import torch.nn.functional as F
 from Model.FNN import FNN
 from DataLoader.DataLoader import Load_MNIST
-from Optimizer.SGLD_op import SGLD_op
+from Optimizer.SGMHC_op import SGHMC_op
 import numpy as np
 import os
+import copy
+import pretty_errors
 
 
-def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_loader,\
+def _SGHMC_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_loader,\
     test_set,test_loader,loss_fn,print_interval,device='cpu'):
     train_result_loss=[]
     train_result_corr=[]
@@ -15,7 +17,7 @@ def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_
     test_result_corr=[]
     train_num=len(train_set)
     test_num=len(test_set)
-    optimizer=SGLD_op(model.parameters(),lr_a,lr_gamma,device)
+    optimizer=SGHMC_op(model.parameters(),lr_a,lr_gamma,device)
     curr_iter_count=0.0
 
     for epoch in range(num_epochs):
@@ -75,7 +77,7 @@ def _SGLD_iter(model,lr_a,lr_gamma,num_epochs,train_set,train_loader,full_train_
                 
     
 
-def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
+def SGHMC_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_seed,save_folder,device="cpu"):
     if torch.cuda.is_available():
         device=torch.device("cuda:0")
     else:
@@ -87,11 +89,11 @@ def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_
     model.to(device)
     train_set,train_loader,full_train_loader,test_set,test_loader=Load_MNIST(batchSize)
     save_name=save_folder+\
-        'SGLD'+' '+\
-        'lr_a[{}]'.format(lr_a)+\
+        'SGHMC'+' '+\
+        'lr_a[{:.3e}]'.format(lr_a)+\
         'lr_gamma[{}]'.format(lr_gamma)
-    print('SGLD: lr_a:{}, lr_gamma:{}'.format(lr_a,lr_gamma))
-    train_loss,train_corr,test_loss,test_corr=_SGLD_iter(model,lr_a,lr_gamma,num_epochs,\
+    print('SGHMC: lr_a:{}, lr_gamma:{}'.format(lr_a,lr_gamma))
+    train_loss,train_corr,test_loss,test_corr=_SGHMC_iter(model,lr_a,lr_gamma,num_epochs,\
         train_set,train_loader,full_train_loader,test_set,test_loader,\
             loss_fn,print_interval,device=device)
     result=np.array([train_loss,train_corr,test_loss,test_corr])
@@ -101,13 +103,13 @@ def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_
 if __name__ == "__main__":
     num_epochs=10
     batchSize=500
-    lr_a=0.00001
-    lr_gamma=0.4
+    lr_a=1.5e-3
+    lr_gamma=0.2
     print_interval=12
     random_seed=2020
-    save_folder='./result/SGLD/'
+    save_folder='./result/SGHMC/'
     loss_fn=F.cross_entropy
-    SGLD_train(
+    SGHMC_train(
         lr_a,
         lr_gamma,
         num_epochs,

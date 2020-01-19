@@ -88,7 +88,7 @@ def SGLD_train(lr_a,lr_gamma,num_epochs,batchSize,loss_fn,print_interval,random_
     train_set,train_loader,full_train_loader,test_set,test_loader=Load_MNIST(batchSize)
     save_name=save_folder+\
         'SGLD'+' '+\
-        'lr_a[{}]'.format(lr_a)+\
+        'lr_a[{:.3e}]'.format(lr_a)+\
         'lr_gamma[{}]'.format(lr_gamma)
     print('SGLD: lr_a:{}, lr_gamma:{}'.format(lr_a,lr_gamma))
     train_loss,train_corr,test_loss,test_corr=_SGLD_iter(model,lr_a,lr_gamma,num_epochs,\

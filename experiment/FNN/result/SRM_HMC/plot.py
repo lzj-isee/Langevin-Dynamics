@@ -12,5 +12,6 @@ for file_name in file_names:
     data=np.load(path+file_name)[1]
     plt.plot(data,label=file_name)
 plt.legend(loc=3)
+plt.ylim([0.85,0.95])
 plt.grid()
 plt.show()
