@@ -2,6 +2,17 @@ import torch
 import numpy as np
 import scipy 
 
+def transform_datas(Datas,device):
+    # Transfrom the data from sparse to array 
+    Labels=Datas['labels']
+    num=(Datas['features']).shape[0]
+    Features=(Datas['features']).toarray()
+    Features=np.concatenate((np.ones((num,1)),Features),axis=1)
+    Labels=torch.Tensor(Labels).to(device)
+    Features=torch.Tensor(Features).to(device)
+    return Labels,Features
+
+
 def sample_datas(trainDatas,train_num,batchSize,weights,device):
     # Sample datas from dataset and preprocess
     indices=np.random.choice(
@@ -17,10 +28,12 @@ def grad_Calc(x,features,labels):
     # Calculate the gradients
     Z= -torch.matmul(features,x)*labels
     A= 1/(1+torch.exp(-Z))
-    result = torch.matmul(torch.diag(A*labels),features)
+    #result = torch.matmul(torch.diag(A*labels),features) # need too much memory
+    result=(A*labels).view(-1,1)*features
     return -result
 
 def forward(x,features,labels):
+    # Bayesian Logistic Regression forward
     Z= torch.matmul(features,x)*labels
     result= 1/(1+torch.exp(-Z))
     return result
@@ -47,8 +60,8 @@ def loss_acc_eval(trainDatas,testDatas,train_num,test_num,x,device):
     train_acc=(torch.round(train_outputs)).sum()/train_num
     test_loss=(-torch.log(test_outputs)).mean()
     test_acc=(torch.round(test_outputs)).sum()/test_num
-    return train_loss.to('cpu').numpy(),train_acc.to('cpu').numpy()\
-        ,test_loss.to('cpu').numpy(),test_acc.to('cpu').numpy()
+    return train_loss.to('cpu').item(),train_acc.to('cpu').item()\
+        ,test_loss.to('cpu').item(),test_acc.to('cpu').item()
 
 
 

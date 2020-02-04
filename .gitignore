@@ -1471,3 +1471,9 @@ experiment/GM/MSE_ALL/NSRM_HMC_seed[2020,2020]setting[0.02,0,0.05]interval[100].
 *.pyc
 graduation_project/BLR-a9a/DataSet/a9a-test.txt
 graduation_project/BLR-a9a/DataSet/a9a-train.txt
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[0.0]/events.out.tfevents.1580814969.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[1.0]/events.out.tfevents.1580812606.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/SGLD lr[8.00e-05,0.00,0.50]/events.out.tfevents.1580805629.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/SVRG lr[8.00e-05,0.00,0.50]/events.out.tfevents.1580805685.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[0.0]/events.out.tfevents.1580814969.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[1.0]/events.out.tfevents.1580812606.DESKTOP-V2M1BU7

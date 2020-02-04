@@ -8,38 +8,50 @@ path.append('./')
 from DataLoader.Load_DataSet import Load_a9a
 from Algorithms.common_functions import *
 from tensorboardX import SummaryWriter
+from Class.RAIS import model_RAIS
 
-def _SGLD(trainDatas,testDatas,lr_sched,num_epochs,batchSize,eval_interval,device,writer):
-    inner_loops=int(len(lr_sched)/num_epochs)
+def _RAIS(trainDatas,testDatas,total_loops,lr_a,lr_b,lr_gamma,\
+    num_epochs,batchSize,alpha,d,eval_interval,device,writer):
+    inner_loops=int(total_loops/num_epochs)
     train_num=len(trainDatas['labels'])
     test_num=len(testDatas['labels'])
     dim=trainDatas['features'].shape[1]
     curr_iter_count=0
-    x=torch.zeros(dim+1).to(device) # dim+1 to include bias
+    model=model_RAIS(
+        torch.zeros(dim+1).to(device),
+        train_num,alpha=alpha,d=d,device=device)
+    # initialize
+    labels,features=transform_datas(trainDatas,device)
+    grads=grad_Calc(model.curr_x,features,labels)
+    model.initialize(grads)
     for epoch in tqdm(range(num_epochs)):
         for i in range(inner_loops):
             curr_iter_count+=1
-            labels,features,_ =sample_datas(
-                trainDatas,train_num,batchSize,np.ones(train_num)/train_num,device)
-            grad_l=grad_Calc(x,features,labels).mean(0)*train_num
-            grad=x+grad_l
-            noise=torch.randn_like(x).to(device)*np.sqrt(2*lr_sched[curr_iter_count-1])
-            x=x-lr_sched[curr_iter_count-1]*grad+noise
+            labels,features,indices=sample_datas(  # Sample datas from set
+                trainDatas,train_num,batchSize,model.p.numpy(),device)
+            grads=grad_Calc(model.curr_x,features,labels)
+            grad_l=model.avg_grad(grads,indices)*train_num
+            model.update(grads,indices)
+            grad=model.curr_x+grad_l
+            eta=lr_a*(round(model.t.item())+lr_b+1)**(-lr_gamma)*model.r.item()
+            noise=torch.randn_like(model.curr_x).to(device)*np.sqrt(2*eta)
+            model.curr_x=model.curr_x-eta*grad+noise
 
             # Eval and Print
             if (curr_iter_count-1)%eval_interval==0:
                 train_loss, train_acc, test_loss, test_acc=loss_acc_eval(
-                    trainDatas,testDatas,train_num,test_num,x,device)
+                    trainDatas,testDatas,train_num,test_num,model.curr_x,device)
                 writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
                 writer.add_scalar('train acc',train_acc,global_step=curr_iter_count)
                 writer.add_scalar('test loss',test_loss,global_step=curr_iter_count)
                 writer.add_scalar('test acc',test_acc,global_step=curr_iter_count)
     writer.close()
+
     
 
 
-def SGLD_trian(lr_a,lr_b,lr_gamma,num_epochs,batchSize,\
-    eval_interval,random_seed,save_folder,use_gpu=True,\
+def RAIS_trian(lr_a,lr_b,lr_gamma,num_epochs,batchSize,\
+    alpha,d,eval_interval,random_seed,save_folder,use_gpu=True,\
     train_path='./DataSet/a9a-train.txt',\
     test_path='./DataSet/a9a-test.txt'):
     # Use GPU if cuda is available
@@ -50,11 +62,12 @@ def SGLD_trian(lr_a,lr_b,lr_gamma,num_epochs,batchSize,\
         device=torch.device('cpu')
         print("use cpu")
     # Creat the save folder and name for result
-    save_name='SGLD'+' '+\
-        'lr[{:.2e},{:.2f},{:.2f}]'.format(lr_a,lr_b,lr_gamma)
+    save_name='RAIS'+' '+\
+        'lr[{:.2e},{:.2f},{:.2f}] alpha[{:.2f}] d[{:.1f}]'.format(\
+        lr_a,lr_b,lr_gamma,alpha,d)
     writer=SummaryWriter(log_dir=save_folder+save_name)
     # Print information before trian
-    print('SGLD lr[{:.2e},{:.2f},{:.2f}]'.format(lr_a,lr_b,lr_gamma))
+    print(save_name)
     # Set random seed
     torch.manual_seed(random_seed)
     np.random.seed(random_seed)
@@ -64,6 +77,5 @@ def SGLD_trian(lr_a,lr_b,lr_gamma,num_epochs,batchSize,\
     train_num=len(trainDatas['labels'])
     dim=trainDatas['features'].shape[1]
     total_loops=num_epochs*round(train_num/batchSize)
-    lr_sched=lr_a*(lr_b+np.arange(total_loops)+1)**(-lr_gamma)
-    _SGLD(trainDatas,testDatas,lr_sched,num_epochs,batchSize,eval_interval,device,writer)
-
+    _RAIS(trainDatas,testDatas,total_loops,lr_a,lr_b,lr_gamma,\
+        num_epochs,batchSize,alpha,d,eval_interval,device,writer)
