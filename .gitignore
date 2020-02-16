@@ -1477,3 +1477,95 @@ graduation_project/BLR-a9a/result/SGLD lr[8.00e-05,0.00,0.50]/events.out.tfevent
 graduation_project/BLR-a9a/result/SVRG lr[8.00e-05,0.00,0.50]/events.out.tfevents.1580805685.DESKTOP-V2M1BU7
 graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[0.0]/events.out.tfevents.1580814969.DESKTOP-V2M1BU7
 graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[1.0]/events.out.tfevents.1580812606.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a-noprior/DataSet/a9a-test.txt
+graduation_project/BLR-a9a-noprior/DataSet/a9a-train.txt
+graduation_project/BLR-a9a-noprior/libsvm/COPYRIGHT
+graduation_project/BLR-a9a-noprior/libsvm/FAQ.html
+graduation_project/BLR-a9a-noprior/libsvm/heart_scale
+graduation_project/BLR-a9a-noprior/libsvm/libsvm.so.2
+graduation_project/BLR-a9a-noprior/libsvm/Makefile
+graduation_project/BLR-a9a-noprior/libsvm/Makefile.win
+graduation_project/BLR-a9a-noprior/libsvm/python/commonutil.py
+graduation_project/BLR-a9a-noprior/libsvm/python/Makefile
+graduation_project/BLR-a9a-noprior/libsvm/python/README
+graduation_project/BLR-a9a-noprior/libsvm/python/svm.py
+graduation_project/BLR-a9a-noprior/libsvm/python/svmutil.py
+graduation_project/BLR-a9a-noprior/libsvm/README
+graduation_project/BLR-a9a-noprior/libsvm/svm-predict
+graduation_project/BLR-a9a-noprior/libsvm/svm-predict.c
+graduation_project/BLR-a9a-noprior/libsvm/svm-scale
+graduation_project/BLR-a9a-noprior/libsvm/svm-scale.c
+graduation_project/BLR-a9a-noprior/libsvm/svm-toy/qt/Makefile
+graduation_project/BLR-a9a-noprior/libsvm/svm-toy/qt/svm-toy.cpp
+graduation_project/BLR-a9a-noprior/libsvm/svm-toy/windows/svm-toy.cpp
+graduation_project/BLR-a9a-noprior/libsvm/svm-train
+graduation_project/BLR-a9a-noprior/libsvm/svm-train.c
+graduation_project/BLR-a9a-noprior/libsvm/svm.cpp
+graduation_project/BLR-a9a-noprior/libsvm/svm.def
+graduation_project/BLR-a9a-noprior/libsvm/svm.h
+graduation_project/BLR-a9a-noprior/libsvm/svm.o
+graduation_project/BLR-a9a-noprior/libsvm/tools/checkdata.py
+graduation_project/BLR-a9a-noprior/libsvm/tools/easy.py
+graduation_project/BLR-a9a-noprior/libsvm/tools/grid.py
+graduation_project/BLR-a9a-noprior/libsvm/tools/README
+graduation_project/BLR-a9a-noprior/libsvm/tools/subset.py
+graduation_project/BLR-a9a-noprior/libsvm/windows/libsvm.dll
+graduation_project/BLR-a9a-noprior/libsvm/windows/libsvmread.mexw64
+graduation_project/BLR-a9a-noprior/libsvm/windows/libsvmwrite.mexw64
+graduation_project/BLR-a9a-noprior/libsvm/windows/svm-predict.exe
+graduation_project/BLR-a9a-noprior/libsvm/windows/svm-scale.exe
+graduation_project/BLR-a9a-noprior/libsvm/windows/svm-toy.exe
+graduation_project/BLR-a9a-noprior/libsvm/windows/svm-train.exe
+graduation_project/BLR-a9a-noprior/libsvm/windows/svmpredict.mexw64
+graduation_project/BLR-a9a-noprior/libsvm/windows/svmtrain.mexw64
+*.DESKTOP-V2M1BU7
+*.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[0.0]/events.out.tfevents.1580814969.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/RAIS lr[8.00e-05,0.00,0.50] alpha[0.10] d[1.0]/events.out.tfevents.1580812606.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/SGLD lr[8.00e-05,0.00,0.50]/events.out.tfevents.1580805629.DESKTOP-V2M1BU7
+graduation_project/BLR-a9a/result/SVRG lr[8.00e-05,0.00,0.50]/events.out.tfevents.1580805685.DESKTOP-V2M1BU7
+graduation_project/BLR-phishing/libsvm/COPYRIGHT
+graduation_project/BLR-phishing/libsvm/FAQ.html
+graduation_project/BLR-phishing/libsvm/heart_scale
+graduation_project/BLR-phishing/libsvm/libsvm.so.2
+graduation_project/BLR-phishing/libsvm/Makefile
+graduation_project/BLR-phishing/libsvm/Makefile.win
+graduation_project/BLR-phishing/libsvm/python/commonutil.py
+graduation_project/BLR-phishing/libsvm/python/Makefile
+graduation_project/BLR-phishing/libsvm/python/README
+graduation_project/BLR-phishing/libsvm/python/svm.py
+graduation_project/BLR-phishing/libsvm/python/svmutil.py
+graduation_project/BLR-phishing/libsvm/README
+graduation_project/BLR-phishing/libsvm/svm-predict
+graduation_project/BLR-phishing/libsvm/svm-predict.c
+graduation_project/BLR-phishing/libsvm/svm-scale
+graduation_project/BLR-phishing/libsvm/svm-scale.c
+graduation_project/BLR-phishing/libsvm/svm-toy/qt/Makefile
+graduation_project/BLR-phishing/libsvm/svm-toy/qt/svm-toy.cpp
+graduation_project/BLR-phishing/libsvm/svm-toy/windows/svm-toy.cpp
+graduation_project/BLR-phishing/libsvm/svm-train
+graduation_project/BLR-phishing/libsvm/svm-train.c
+graduation_project/BLR-phishing/libsvm/svm.cpp
+graduation_project/BLR-phishing/libsvm/svm.def
+graduation_project/BLR-phishing/libsvm/svm.h
+graduation_project/BLR-phishing/libsvm/svm.o
+graduation_project/BLR-phishing/libsvm/tools/checkdata.py
+graduation_project/BLR-phishing/libsvm/tools/easy.py
+graduation_project/BLR-phishing/libsvm/tools/grid.py
+graduation_project/BLR-phishing/libsvm/tools/README
+graduation_project/BLR-phishing/libsvm/tools/subset.py
+graduation_project/BLR-phishing/libsvm/windows/libsvm.dll
+graduation_project/BLR-phishing/libsvm/windows/libsvmread.mexw64
+graduation_project/BLR-phishing/libsvm/windows/libsvmwrite.mexw64
+graduation_project/BLR-phishing/libsvm/windows/svm-predict.exe
+graduation_project/BLR-phishing/libsvm/windows/svm-scale.exe
+graduation_project/BLR-phishing/libsvm/windows/svm-toy.exe
+graduation_project/BLR-phishing/libsvm/windows/svm-train.exe
+graduation_project/BLR-phishing/libsvm/windows/svmpredict.mexw64
+graduation_project/BLR-phishing/libsvm/windows/svmtrain.mexw64
+graduation_project/GM/result/SVRGLD/SVRGLD lr[1.00e+00,0.00,0.50].npy
+graduation_project/GM/result/SGLD/SGLD lr[1.00e+00,0.00,0.50].npy
+graduation_project/GM/result/RAISLD/RAISLD lr[1.00e+00,0.00,0.50] alpha[0.10] d[1.0].npy
+graduation_project/GM/result/SVRGLD/SVRGLD lr[1.00e+00,0.00,0.50].npy
+graduation_project/GM/result/SGLD/SGLD lr[1.00e+00,0.00,0.50].npy
+graduation_project/GM/result/RAISLD/RAISLD lr[1.00e+00,0.00,0.50] alpha[0.10] d[1.0].npy

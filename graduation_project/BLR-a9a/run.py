@@ -1,56 +1,32 @@
-from Algorithms.SGLD import SGLD_trian
-from Algorithms.SVRG import SVRG_trian
-from Algorithms.RAIS import RAIS_trian
 import pretty_errors
+from Train.SGLD import SGLD_train
+from Train.SGD import SGD_train
+from Train.SVRGLD import SVRGLD_train
+from Train.RAISLD import RAISLD_train
+from Train.RAISLDe import RAISLDe_train
 
-lr_a=8e-5
-lr_b=0
-lr_gamma=0.5
-num_epochs=100
-batchSize=500
-eval_interval=12
-random_seed=1
-save_folder='./result/'
-train_path='./DataSet/a9a-train.txt'
-test_path='./DataSet/a9a-test.txt'
-RAIS_trian(
-    lr_a=lr_a,
-    lr_b=lr_b,
-    lr_gamma=lr_gamma,
-    num_epochs=num_epochs,
-    batchSize=batchSize,
-    alpha=0.1,
-    d=1,
-    eval_interval=eval_interval,
-    random_seed=random_seed,
-    save_folder=save_folder,
-    use_gpu=False,
-    train_path=train_path,
-    test_path=test_path)
-'''
-SGLD_trian(
-    lr_a=lr_a,
-    lr_b=lr_b,
-    lr_gamma=lr_gamma,
-    num_epochs=num_epochs,
-    batchSize=batchSize,
-    eval_interval=eval_interval,
-    random_seed=random_seed,
-    save_folder=save_folder,
-    use_gpu=False,
-    train_path=train_path,
-    test_path=test_path)
+settings={
+    'lr_a':1e-5,    # common setting
+    'lr_b':0,       # common setting
+    'lr_gamma':0.5, # common setting
+    'num_epochs':100,   # common setting
+    'batchSize':100,    # common setting
+    'eval_interval':20, # common setting
+    'burn_in':5000,  # common setting, the threshold of burn in
+    'random_seed':1,    # common setting
+    'alpha':0.1,    # RAIS only
+    'd':1,          # RAIS only
+    'save_folder':'./result4/', 
+    'use_gpu':False}
 
-SVRG_trian(
-    lr_a=lr_a,
-    lr_b=lr_b,
-    lr_gamma=lr_gamma,
-    num_epochs=num_epochs,
-    batchSize=batchSize,
-    eval_interval=eval_interval,
-    random_seed=random_seed,
-    save_folder=save_folder,
-    use_gpu=True,
-    train_path=train_path,
-    test_path=test_path)
-'''
+SGLD_train(**settings)
+SGD_train(**settings)
+SVRGLD_train(**settings)
+RAISLD_train(**settings)
+RAISLDe_train(**settings)
+
+
+with open(settings['save_folder']+'settings.md',mode='w') as f:
+    for key in settings:
+        f.write(key+": "+'{}'.format(settings[key])+'  \n')
+    
