@@ -1569,3 +1569,4 @@ graduation_project/GM/result/RAISLD/RAISLD lr[1.00e+00,0.00,0.50] alpha[0.10] d[
 graduation_project/GM/result/SVRGLD/SVRGLD lr[1.00e+00,0.00,0.50].npy
 graduation_project/GM/result/SGLD/SGLD lr[1.00e+00,0.00,0.50].npy
 graduation_project/GM/result/RAISLD/RAISLD lr[1.00e+00,0.00,0.50] alpha[0.10] d[1.0].npy
+*.npy
