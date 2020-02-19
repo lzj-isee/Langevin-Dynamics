@@ -30,13 +30,12 @@ def _RAISLD_it(trainSet,testSet,writer,device,**kw):
             model.average_grads()
             grad=model.curr_x+model.grad_avg*train_num
             model.update()
-            eta=kw['lr_a']*(round(model.t.item())+kw['lr_b'])**(-kw['lr_gamma'])*model.r.item()
-            #eta=kw['lr_a']*(curr_iter_count+kw['lr_b'])**(-kw['lr_gamma'])
+            eta=kw['lr_a']*(model.t.item()+kw['lr_b'])**(-kw['lr_gamma'])*model.r.item()
             noise=torch.randn_like(model.curr_x).to(model.device)*np.sqrt(2*eta)
             model.curr_x=model.curr_x-grad*eta+noise
 
             # Eval and Print
-            if curr_iter_count>=kw['burn_in']:
+            if curr_iter_count>=kw['burn_in'] and kw['burn_in']!=False:
                 model.burn_in=True
             if (curr_iter_count-1)%kw['eval_interval']==0:
                 model.lr_new=eta

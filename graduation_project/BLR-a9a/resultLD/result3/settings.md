@@ -1,0 +1,12 @@
+lr_a: 4e-05  
+lr_b: 0  
+lr_gamma: 0.5  
+num_epochs: 100  
+batchSize: 50  
+eval_interval: 100  
+burn_in: False  
+random_seed: 1  
+alpha: 0.1  
+d: 1  
+save_folder: ./resultLD/result3/  
+use_gpu: False  

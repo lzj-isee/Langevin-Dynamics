@@ -29,7 +29,7 @@ def _SGLD_it(trainSet,testSet,writer,device,**kw):
             model.curr_x=model.curr_x-grad*eta+noise
 
             # Eval and Print
-            if curr_iter_count>=kw['burn_in']:
+            if curr_iter_count>=kw['burn_in'] and kw['burn_in']!=False:
                 model.burn_in=True
             if (curr_iter_count-1)%kw['eval_interval']==0:
                 model.lr_new=eta

@@ -26,7 +26,7 @@ class Alg_RAISLD(Alg_SGLD):
     def average_grads(self):
         w=(1/self.p/self.train_num).numpy()
         self.grad_avg = torch.Tensor(\
-            np.average(self.grads.to('cpu').numpy(),axis=0,weights=w[self.indices]))
+            np.average(self.grads.to('cpu').numpy(),axis=0,weights=w[self.indices])).to(self.device)
         self.EgR=self.EgR*(1-self.alpha)+self.alpha*torch.norm(self.grad_avg)**2
 
 
