@@ -9,7 +9,7 @@ from Load_dataset import load_dataset
 
 
 
-def _RAISLD_it(trainSet,writer,device,**kw):
+def _RAISLDe_it(trainSet,writer,device,**kw):
     train_num=len(trainSet['labels'])
     dim=trainSet['features'].shape[1]
     inner_loops=round(train_num/kw['batchSize'])
@@ -29,8 +29,8 @@ def _RAISLD_it(trainSet,writer,device,**kw):
             model.average_grads()
             grad=model.curr_x/model.lambda2+model.grad_avg*train_num
             model.update()
-            eta=kw['lr_a']*(model.t.item()+kw['lr_b'])**(-kw['lr_gamma'])*model.r.item()
-            #eta=kw['lr_a']*(curr_iter_count+kw['lr_b'])**(-kw['lr_gamma'])
+            #eta=kw['lr_a']*(round(model.t.item())+kw['lr_b'])**(-kw['lr_gamma'])*model.r.item()
+            eta=kw['lr_a']*(curr_iter_count+kw['lr_b'])**(-kw['lr_gamma'])
             noise=torch.randn_like(model.curr_x).to(model.device)*np.sqrt(2*eta)
             model.curr_x=model.curr_x-grad*eta+noise
 
@@ -39,16 +39,16 @@ def _RAISLD_it(trainSet,writer,device,**kw):
                 model.burn_in=True
             if (curr_iter_count-1)%kw['eval_interval']==0:
                 model.lr_new=eta
-                train_loss, train_mse=model.loss_mse_eval(
+                train_mse=model.loss_mse_eval(
                     trainSet,train_num)
-                writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
+                #writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
                 writer.add_scalar('train mse',train_mse,global_step=curr_iter_count)
                 model.lr_sum=model.lr_sum+model.lr_new
     writer.close()
 
 
 
-def RAISLD_train(**kw):
+def RAISLDe_train(**kw):
     # Use GPU if cuda is available
     if torch.cuda.is_available() and kw['use_gpu']==True:
         device=torch.device('cuda:0')
@@ -57,7 +57,7 @@ def RAISLD_train(**kw):
         device=torch.device('cpu')
         print('use cpu')
     # Creat the save folder and name for result
-    save_name='RAISLD'+' '+\
+    save_name='RAISLDe'+' '+\
         'lr[{:.2e},{:.2f},{:.2f}] alpha[{:.2f}] d[{:.1f}]'.format(\
             kw['lr_a'],kw['lr_b'],kw['lr_gamma'],kw['alpha'],kw['d'])
     writer=SummaryWriter(log_dir=kw['save_folder']+save_name)
@@ -69,5 +69,5 @@ def RAISLD_train(**kw):
     # Load DataSet as sparse matrix
     trainSet=load_dataset()
     # Main function
-    _RAISLD_it(trainSet,writer,device,**kw)
+    _RAISLDe_it(trainSet,writer,device,**kw)
 

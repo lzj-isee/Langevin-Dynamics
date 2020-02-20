@@ -39,9 +39,9 @@ def _RAISLD_it(trainSet,writer,device,**kw):
                 model.burn_in=True
             if (curr_iter_count-1)%kw['eval_interval']==0:
                 model.lr_new=eta
-                train_loss, train_mse=model.loss_mse_eval(
+                train_mse=model.loss_mse_eval(
                     trainSet,train_num)
-                writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
+                #writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
                 writer.add_scalar('train mse',train_mse,global_step=curr_iter_count)
                 model.lr_sum=model.lr_sum+model.lr_new
     writer.close()

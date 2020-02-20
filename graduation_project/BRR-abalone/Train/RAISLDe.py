@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
-from Load_DataSet import load_dataset_sp
+from Load_dataset import load_dataset
 
 
 
@@ -27,7 +27,7 @@ def _RAISLDe_it(trainSet,writer,device,**kw):
             model.Sample_Datas(trainSet,train_num,kw['batchSize'],model.p.numpy())
             model.Grads_Calc()
             model.average_grads()
-            grad=model.curr_x+model.grad_avg*train_num
+            grad=model.curr_x/model.lambda2+model.grad_avg*train_num
             model.update()
             #eta=kw['lr_a']*(round(model.t.item())+kw['lr_b'])**(-kw['lr_gamma'])*model.r.item()
             eta=kw['lr_a']*(curr_iter_count+kw['lr_b'])**(-kw['lr_gamma'])
@@ -39,10 +39,10 @@ def _RAISLDe_it(trainSet,writer,device,**kw):
                 model.burn_in=True
             if (curr_iter_count-1)%kw['eval_interval']==0:
                 model.lr_new=eta
-                train_loss, train_acc,=model.loss_acc_eval(
+                train_loss, train_mse,=model.loss_mse_eval(
                     trainSet,train_num)
                 writer.add_scalar('train loss',train_loss,global_step=curr_iter_count)
-                writer.add_scalar('train acc',train_acc,global_step=curr_iter_count)
+                writer.add_scalar('train mse',train_mse,global_step=curr_iter_count)
                 model.lr_sum=model.lr_sum+model.lr_new
     writer.close()
 
@@ -67,7 +67,7 @@ def RAISLDe_train(**kw):
     torch.manual_seed(kw['random_seed'])
     np.random.seed(kw['random_seed'])
     # Load DataSet as sparse matrix
-    trainSet=load_dataset_sp()
+    trainSet=load_dataset()
     # Main function
     _RAISLDe_it(trainSet,writer,device,**kw)
 

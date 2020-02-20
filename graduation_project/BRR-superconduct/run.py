@@ -6,22 +6,22 @@ from Train.RAISLD import RAISLD_train
 from Train.RAISLDe import RAISLDe_train
 
 settings={
-    'lr_a':10e-4,    # common setting
+    'lr_a':1e-11,    # common setting
     'lr_b':0,       # common setting
     'lr_gamma':0.5, # common setting
-    'num_epochs':100,   # common setting
+    'num_epochs':200,   # common setting
     'batchSize':32,    # common setting
-    'eval_interval':50, # common setting
-    'burn_in':3000,  # common setting, the threshold of burn in
+    'eval_interval':200, # common setting
+    'burn_in':False,  # common setting, the threshold of burn in
     'random_seed':1,    # common setting
     'alpha':0.1,    # RAIS only
     'd':1,          # RAIS only
-    'save_folder':'./result/result4b/', 
+    'save_folder':'./result/result1/', 
     'use_gpu':False}
-SGD_train(**settings)
-SGLD_train(**settings)
-SVRGLD_train(**settings)
-RAISLD_train(**settings)
+#SGD_train(**settings)
+#SGLD_train(**settings)
+#SVRGLD_train(**settings)
+#RAISLD_train(**settings)
 RAISLDe_train(**settings)
 
 

@@ -1649,3 +1649,6 @@ graduation_project/BRR-abalone/libsvm/windows/svm-toy.exe
 graduation_project/BRR-abalone/libsvm/windows/svm-train.exe
 graduation_project/BRR-abalone/libsvm/windows/svmpredict.mexw64
 graduation_project/BRR-abalone/libsvm/windows/svmtrain.mexw64
+*.csv
+graduation_project/superconduct.zip
+graduation_project/BlogFeedback.zip

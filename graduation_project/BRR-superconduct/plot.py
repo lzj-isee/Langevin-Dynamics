@@ -1,5 +1,5 @@
 import os
 import webbrowser
 webbrowser.open('http://localhost:6006/')
-os.system('tensorboard --logdir=./result/result4b')
+os.system('tensorboard --logdir=./result/result1')
 

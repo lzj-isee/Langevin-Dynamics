@@ -6,7 +6,7 @@ class Alg_SGLD(object):
     def __init__(self,curr_x,device):
         # The param of BRR model
         self.curr_x=curr_x.to(device)
-        self.lambda1=5
+        self.lambda1=10
         self.lambda2=1
         # The dimension of Data
         self.dim=len(curr_x)
@@ -87,11 +87,11 @@ class Alg_SGLD(object):
         train_outputs=self.forward(trainFeatures)
         #test_outputs=self.forward(testFeatures,testLabels)
         if self.burn_in==False:  # Not burn in, no average 
-            train_loss=(self.negative_log_prob(train_outputs,trainLabels)).mean()
+            #train_loss=(self.negative_log_prob(train_outputs,trainLabels)).mean()
             train_mse=((train_outputs-trainLabels)**2).mean()
             #test_loss=(-torch.log(test_outputs)).mean()
             #test_acc=(torch.round(test_outputs)).sum()/test_num
-            return train_loss.to('cpu').item(),train_mse.to('cpu').item()
+            return train_mse.to('cpu').item()
         else: # Already burn in, consider average
             if self.train_outputs_avg==None:
                 # the first time to record outputs
@@ -103,10 +103,10 @@ class Alg_SGLD(object):
                     self.lr_new*train_outputs)/(self.lr_new+self.lr_sum)
                 #self.test_outputs_avg=(self.lr_sum*self.test_outputs_avg+\
                     #self.lr_new*test_outputs)/(self.lr_new+self.lr_sum)
-            train_loss=(self.negative_log_prob(self.train_outputs_avg,trainLabels)).mean()
+            #train_loss=(self.negative_log_prob(self.train_outputs_avg,trainLabels)).mean()
             train_mse=((self.train_outputs_avg-trainLabels)**2).mean()
             #test_loss=(-torch.log(self.test_outputs_avg)).mean()
             #test_acc=(torch.round(self.test_outputs_avg)).sum()/test_num
-            return train_loss.to('cpu').item(),train_mse.to('cpu').item()
+            return train_mse.to('cpu').item()
 
         
