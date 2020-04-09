@@ -1,0 +1,12 @@
+lr_a: 0.0001  
+lr_b: 0  
+lr_gamma: 0.5  
+num_epochs: 10  
+batchSize: 32  
+eval_interval: 1  
+burn_in: 200  
+random_seed: 1  
+alpha: 0.1  
+d: 2.0  
+save_folder: ./result/  
+use_gpu: False  
